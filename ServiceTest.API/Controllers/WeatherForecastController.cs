@@ -5,15 +5,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Generic.API.Controllers
+namespace ServiceTest.API.Controllers
 {
     [ApiController]
-    [Route("api/v1/[controller]/[action]")]
+    [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
         private static readonly string[] Summaries = new[]
         {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching" , "Oattest"
+            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
 
         private readonly ILogger<WeatherForecastController> _logger;
@@ -34,12 +34,6 @@ namespace Generic.API.Controllers
                 Summary = Summaries[rng.Next(Summaries.Length)]
             })
             .ToArray();
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
-        {
-            return Ok();
         }
     }
 }

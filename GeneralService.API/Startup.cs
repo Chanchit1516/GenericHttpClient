@@ -46,7 +46,7 @@ namespace GeneralService.API
             // HttpClientFactory
             services.AddHttpClient("GeneralService.Api", client =>
             {
-                client.BaseAddress = new Uri(Configuration["ProjectsAPIServer"]);
+                client.BaseAddress = new Uri(Configuration["ServiceUrl"]);
                 //client.DefaultRequestHeaders.Add("Authorization", "");
                 //client.DefaultRequestHeaders.Add("X-Version", Configuration["X-VERSION"]);
             });

@@ -28,24 +28,18 @@ namespace Utilities.RestApi
         {
             T data;
             _client = _httpClientFactory.CreateClient(_clientName);
-            try
-            {
 
-                using (HttpResponseMessage response = await _client.GetAsync(url))
-                using (HttpContent content = response.Content)
+            using (HttpResponseMessage response = await _client.GetAsync(url))
+            using (HttpContent content = response.Content)
+            {
+                string d = await content.ReadAsStringAsync();
+                if (d != null)
                 {
-                    string d = await content.ReadAsStringAsync();
-                    if (d != null)
-                    {
-                        data = JsonConvert.DeserializeObject<T>(d);
-                        return (T)data;
-                    }
+                    data = JsonConvert.DeserializeObject<T>(d);
+                    return (T)data;
                 }
             }
-            catch (Exception ex)
-            {
-                throw;
-            }
+
             Object o = new Object();
             return (T)o;
         }
