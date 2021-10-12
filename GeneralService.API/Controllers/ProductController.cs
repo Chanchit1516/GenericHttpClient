@@ -32,21 +32,21 @@ namespace GeneralService.API.Controllers
         public async Task<IActionResult> Insert([FromBody] CreateProductRequest request)
         {
             var res = await _productService.Insert(request);
-            return Ok();
+            return Ok(res);
         }
 
         [HttpPut]
         public async Task<IActionResult> Update([FromBody] UpdateProductRequest request)
         {
             var res = await _productService.Update(request);
-            return Ok();
+            return Ok(res);
         }
 
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
             var res = await _productService.Delete(id);
-            return Ok();
+            return Ok(res);
         }
     }
 }

@@ -28,7 +28,7 @@ namespace GeneralService.API.Services
 
         public async Task<ResponseMessage<GetByIdProductResponse>> GetById(int id)
         {
-            var url = $"/api/v1/Product/GetById?id=${id}";
+            var url = $"/api/v1/Product/GetById?id={id}";
             return await _restUtility.GetAsync<ResponseMessage<GetByIdProductResponse>>(url);
         }
 
