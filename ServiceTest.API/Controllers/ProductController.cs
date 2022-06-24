@@ -152,5 +152,28 @@ namespace ServiceTest.API.Controllers
                 };
             }
         }
+
+        [HttpPost]
+        public ResponseMessage<bool> FormData([FromForm] FormBodyRequest request)
+        {
+            try
+            {
+                return new ResponseMessage<bool>()
+                {
+                    data = true,
+                    status = HttpStatusCode.OK
+                };
+            }
+            catch (Exception ex)
+            {
+                _context.Dispose();
+                return new ResponseMessage<bool>()
+                {
+                    message = ex.Message,
+                    status = HttpStatusCode.InternalServerError
+                };
+            }
+        }
+
     }
 }

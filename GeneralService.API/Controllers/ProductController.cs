@@ -48,5 +48,12 @@ namespace GeneralService.API.Controllers
             var res = await _productService.Delete(id);
             return Ok(res);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> PostWithFormData()
+        {
+            var res = await _productService.PostWithFormData();
+            return Ok(res);
+        }
     }
 }

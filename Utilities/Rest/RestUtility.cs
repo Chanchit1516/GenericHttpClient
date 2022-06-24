@@ -1,11 +1,17 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using System.Net.Http;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using Utilities.Rest;
 
 namespace Utilities.RestApi
@@ -53,16 +59,35 @@ namespace Utilities.RestApi
             {
                 var requestBody = JsonConvert.SerializeObject(requestBodyObject);
 
-                using (HttpResponseMessage response = await _client.PostAsync(url, new StringContent(requestBody, Encoding.UTF8, contentType)))
-                using (HttpContent content = response.Content)
+                if (contentType == HttpContentType.XForm)
                 {
-                    string d = await content.ReadAsStringAsync();
-                    if (d != null)
+                    Dictionary<string, string> requestContent = MapToDictionary(requestBodyObject);
+
+                    using (HttpResponseMessage response = await _client.PostAsync(url, new FormUrlEncodedContent(requestContent)))
+                    using (HttpContent content = response.Content)
                     {
-                        data = JsonConvert.DeserializeObject<T>(d);
-                        return (T)data;
+                        string d = await content.ReadAsStringAsync();
+                        if (d != null)
+                        {
+                            data = JsonConvert.DeserializeObject<T>(d);
+                            return (T)data;
+                        }
                     }
                 }
+                else
+                {
+                    using (HttpResponseMessage response = await _client.PostAsync(url, new StringContent(requestBody, Encoding.UTF8, contentType)))
+                    using (HttpContent content = response.Content)
+                    {
+                        string d = await content.ReadAsStringAsync();
+                        if (d != null)
+                        {
+                            data = JsonConvert.DeserializeObject<T>(d);
+                            return (T)data;
+                        }
+                    }
+                }
+
             }
 
             Object o = new Object();
@@ -113,11 +138,47 @@ namespace Utilities.RestApi
         }
         #endregion
 
-    }
+        public Dictionary<string, string> MapToDictionary(object source)
+        {
+            var dictionary = new Dictionary<string, string>();
+            MapToDictionaryInternal(dictionary, source);
+            return dictionary;
+        }
 
-    public static class HttpContentType
-    {
-        public const string JSON = "application/json";
-        public const string XForm = "application/x-www-form-urlencoded";
+        private void MapToDictionaryInternal(
+            Dictionary<string, string> dictionary, object source, string name = "")
+        {
+            var properties = source.GetType().GetProperties();
+            foreach (var p in properties)
+            {
+                var key = string.IsNullOrEmpty(name) ? p.Name : name + "." + p.Name;
+                object value = p.GetValue(source, null);
+                Type valueType = value?.GetType();
+
+                if (valueType == null || valueType.IsPrimitive || valueType == typeof(string) || valueType == typeof(int) || valueType == typeof(decimal) || valueType == typeof(long) || valueType == typeof(bool) || valueType == typeof(DateTime))
+                {
+                    dictionary[key] = value == null ? "" : value.ToString();
+                }
+                else if (value is IEnumerable)
+                {
+                    var i = 0;
+                    foreach (object o in (IEnumerable)value)
+                    {
+                        MapToDictionaryInternal(dictionary, o, key + "[" + i + "]");
+                        i++;
+                    }
+                }
+                else
+                {
+                    MapToDictionaryInternal(dictionary, value, key);
+                }
+            }
+        }
+
+        public static class HttpContentType
+        {
+            public const string JSON = "application/json";
+            public const string XForm = "application/x-www-form-urlencoded";
+        }
     }
 }
