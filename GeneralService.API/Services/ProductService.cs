@@ -69,5 +69,13 @@ namespace GeneralService.API.Services
             return await _restUtility.PostAsync<ResponseMessage<bool>>(url, request, HttpContentType.XForm);
         }
 
+        public async Task LineNotify()
+        {
+            var token = $"D3Q0xRuA4JnsFpCksnQtx3iro2fhVMQ9BWH1HoJdBHq";
+            var url = $"https://notify-api.line.me/api/notify";
+            await _restUtility.PostLineNotiAsync(token, "สวัสดีชาวโลก", 1, 10, "https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png");
+
+            //LineNotify(“DwNQ7NQxrG8wgEaoUKvjgWKh1n08rxxxxxx”,”สวัสดีชาวโลก” , 1, 10, “https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png”);
+        }
     }
 }

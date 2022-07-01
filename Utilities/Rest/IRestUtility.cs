@@ -13,5 +13,6 @@ namespace Utilities.Rest
         Task<T> PostAsync<T>(string url, object requestBodyObject, string contentType = HttpContentType.JSON);
         Task<T> PutAsync<T>(string url, object requestBodyObject, string contentType = HttpContentType.JSON);
         Task<T> DeleteAsync<T>(string url);
+        Task PostLineNotiAsync(string lineToken, string message, int stickerPackageID, int stickerID, string pictureUrl);
     }
 }

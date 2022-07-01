@@ -55,5 +55,12 @@ namespace GeneralService.API.Controllers
             var res = await _productService.PostWithFormData();
             return Ok(res);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> LineNotify()
+        {
+            await _productService.LineNotify();
+            return Ok();
+        }
     }
 }

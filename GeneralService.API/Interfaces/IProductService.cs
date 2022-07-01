@@ -16,5 +16,6 @@ namespace GeneralService.API.Interfaces
         Task<ResponseMessage<bool>> Update(UpdateProductRequest request);
         Task<ResponseMessage<bool>> Delete(int id);
         Task<ResponseMessage<bool>> PostWithFormData();
+        Task LineNotify();
     }
 }
